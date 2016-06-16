@@ -1,0 +1,16 @@
+{
+    "name": "kobas/connector",
+    "authors": [
+        {
+            "name": "Vittorio Delsignore",
+            "email": "vitxd@yahoo.it"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Kobas\\": "src/Kobas/"
+        }
+    }
+}
