@@ -1,0 +1,9 @@
+extensions:
+  - PhpSpec\Extension\CodeCoverageExtension
+code_coverage:
+  whitelist:
+    - src/
+  format:
+    - html
+  output:
+    html: coverage/

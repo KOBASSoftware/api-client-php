@@ -3,27 +3,34 @@
 namespace Kobas;
 
 
+use Kobas\Exception\HttpException;
 use Kobas\Auth\Signer;
+use Kobas\Request\HttpRequest;
 
 class Client
 {
+//	protected $api_url = 'https://api.kobas.dev/v2';
 	protected $api_url = 'https://api.kobas.co.uk/v2';
 	protected $signer;
 
-	public function __construct(Signer $signer)
+	public function __construct(Signer $signer, HttpRequest $request)
 	{
-		$this->signer = $signer;
+		$this->signer 	= $signer;
+		$this->request	= $request;
 	}
 
-	protected function call($http_method, array $headers, $url, $params)
+	protected function call($http_method, $service, array $params = array(), array $headers = array())
 	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($http_method));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_ENCODING, '');
-		curl_setopt($ch, CURLOPT_COOKIE, 'XDEBUG_SESSION_START=php;');
+		$url = $this->api_url . '/' . trim($service, '/');
+
+		$this->request
+			->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
+			->setOption(CURLOPT_RETURNTRANSFER, true)
+			->setOption(CURLOPT_SSL_VERIFYPEER, false)
+			->setOption(CURLOPT_FOLLOWLOCATION, true)
+			->setOption(CURLOPT_ENCODING, '')
+			->setOption(CURLOPT_COOKIE, 'XDEBUG_SESSION_START=php;')
+		;
 
 
 		$headers['Content-Type'] = 'application/json';
@@ -32,20 +39,47 @@ class Client
 		switch ($http_method)
 		{
 			case 'POST':
-				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params));
+				$this->request->setOption(CURLOPT_POSTFIELDS, json_encode($params));
 				break;
 			case 'DELETE':
 			case 'PUT':
-				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+			$this->request->setOption(CURLOPT_POSTFIELDS, http_build_query($params));
 				break;
 			case 'GET':
-				$url .= "?" . http_build_query($params);
-				$params = [];
+				if (count($params))
+				{
+					$url .= "?" . http_build_query($params);
+					$params = [];
+				}
 				break;
 		}
 
-		curl_setopt($ch, CURLOPT_URL, $url);
+		$this->request->setUrl($url);
 
-		$this->signer->signRequest($http_method, $url, $headers, $params);
+		$headers = $this->signer->signRequest($http_method, $url, $headers, $params);
+
+		print_r($headers);
+		$this->request->setOption(CURLOPT_HTTPHEADER, $headers);
+
+		$result = $this->request->execute();
+		$last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
+		if ($last_response >= 400)
+		{
+			throw new HttpException($last_response);
+		}
+
+		$this->request->close();
+
+		return json_decode($result, true);
+	}
+
+	public function getVenues($id = 0)
+	{
+		$service = 'venue';
+		if ($id)
+		{
+			$service .= '/' . $id;
+		}
+		return $this->call('GET', $service);
 	}
 }

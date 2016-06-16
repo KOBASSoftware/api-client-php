@@ -32,24 +32,33 @@ class Signer
 		$this->setSecret($secret);
 	}
 
-	public function signRequest($method, $url, array $signed_headers, array $data = array())
+	public function setUrl($url)
 	{
-		$parsed_url = parse_url($url);
-		$parsed_url['query'] = isset($parsed_url['query']) ? $this->rfc3986Decode($parsed_url['query']) : '';
+		$this->parsed_url = parse_url($url);
+		// handle double encoding issues
+		$this->parsed_url['query'] = isset($this->parsed_url['query']) ? $this->rfc3986Decode($this->parsed_url['query']) : '';
+		$this->setService(str_replace('/v2', '', $this->parsed_url['path']));
+		return $this;
+	}
+
+	public function signRequest($method, $url, array $signed_headers = array(), array $data = array())
+	{
 		$time = time();
 
+		$this->setUrl($url);
+
 		$this->setMethod($method);
-		$this->setHeaders($signed_headers);
 		$this->setParams($data);
 
 		$signed_headers['X-Kbs-Date'] = $this->requestDateTime($time);
+		$this->setHeaders($signed_headers);
 
 		$signature = $this->signature($time);
 
 		$signed_headers['Authorization'] = $this->authorization($time, $signature);
 
 		$headers = [];
-		foreach($this->signed_headers as $key => $value)
+		foreach($signed_headers as $key => $value)
 		{
 			$headers[] = $key . ': ' . $value;
 		}
@@ -94,7 +103,7 @@ class Signer
 	 */
 	protected function stringToSign($time)
 	{
-		$string_to_sign = $this->auth_type . "\n";
+		$string_to_sign  = $this->auth_type . "\n";
 		$string_to_sign .= $this->requestDateTime($time) . "\n";
 		$string_to_sign .= $this->credentialScope($time) . "\n";
 		$string_to_sign .= $this->hex16($this->hash($this->canonicalRequest()));
@@ -155,7 +164,8 @@ class Signer
 	 * @param string $path
 	 * @return string The request URI path.
 	 */
-	protected function canonicalUri($path) {
+	protected function canonicalUri($path)
+	{
 		if (strlen($path) > 0)
 		{
 			return $path;
@@ -336,36 +346,6 @@ class Signer
 	}
 
 	/**
-	 * Gets a header value by key. Lowercases the key for convenience
-	 * @param string $key
-	 * @return mixed
-	 */
-	protected function getHeader($key)
-	{
-		if (isset($this->headers[$key]))
-		{
-			return $this->headers[$key];
-		}
-		$key = strtolower($key);
-		if (isset($this->lc_headers[$key]))
-		{
-			return $this->lc_headers[$key];
-		}
-		return null;
-	}
-
-	public function setSignature($signature)
-	{
-		$this->signature = $signature;
-		return $this;
-	}
-
-	public function getSignature()
-	{
-		return $this->signature;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getMethod()
@@ -397,7 +377,7 @@ class Signer
 	 */
 	public function setService($service)
 	{
-		$this->service = $service;
+		$this->service = trim($service, '/');
 		return $this;
 	}
 
