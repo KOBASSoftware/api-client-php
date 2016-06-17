@@ -82,4 +82,38 @@ class Client
 		}
 		return $this->call('GET', $service);
 	}
+
+	public function createCustomer($data)
+	{
+		$service = 'loyalty/customer';
+
+		$fields = [
+			'customer',
+			'title',
+			'firstname',
+			'surname',
+			'date_of_birth',
+			'gender',
+			'address_1',
+			'address_2',
+			'city',
+			'postcode',
+			'county',
+			'email',
+			'email_optin',
+			'mobile',
+			'mobile_optin',
+			'venue',
+			];
+
+		foreach($data as $key => $val)
+		{
+			if (!in_array($key, $fields))
+			{
+				unset($data[$key]);
+			}
+		}
+
+		return $this->call('POST', $service, $data);
+	}
 }
