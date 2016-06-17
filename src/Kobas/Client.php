@@ -26,15 +26,12 @@ class Client
 		$this->request
 			->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
 			->setOption(CURLOPT_RETURNTRANSFER, true)
-			->setOption(CURLOPT_SSL_VERIFYPEER, false)
+//			->setOption(CURLOPT_SSL_VERIFYPEER, false)
 			->setOption(CURLOPT_FOLLOWLOCATION, true)
 			->setOption(CURLOPT_ENCODING, '')
-			->setOption(CURLOPT_COOKIE, 'XDEBUG_SESSION_START=php;')
 		;
 
-
 		$headers['Content-Type'] = 'application/json';
-
 
 		switch ($http_method)
 		{
@@ -58,14 +55,13 @@ class Client
 
 		$headers = $this->signer->signRequest($http_method, $url, $headers, $params);
 
-		print_r($headers);
 		$this->request->setOption(CURLOPT_HTTPHEADER, $headers);
 
 		$result = $this->request->execute();
 		$last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
 		if ($last_response >= 400)
 		{
-			throw new HttpException($last_response);
+			throw new HttpException($last_response, json_encode($result, true));
 		}
 
 		$this->request->close();
