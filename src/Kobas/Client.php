@@ -17,24 +17,22 @@ class Client
     /**
      * @var string
      */
-    protected $api_url;
-    /**
-     * @var string
-     */
     protected $api_base_url = 'https://api.kobas.co.uk';
-//    protected $api_base_url = 'https://api.kobas.dev';
+
     /**
      * @var string
      */
     protected $version = 'v2';
-    /**
-     * @var Signer
-     */
-    protected $signer;
+
     /**
      * @var bool
      */
     protected $ssl_verify_peer = true;
+
+    /**
+     * @var Signer
+     */
+    protected $signer;
 
     /**
      * Client constructor.
@@ -48,7 +46,29 @@ class Client
             $request = new Curl();
         }
         $this->request = $request;
-        $this->api_url = $this->api_base_url . '/' . $this->version . '/';
+    }
+
+    /**
+     * Allows you to set the API Base URL. Default value is 'https://api.kobas.co.uk'
+     * @param $url
+     */
+    public function setAPIBaseURL($url) {
+        $this->api_base_url = $url;
+    }
+
+    /**
+     * Allows you to set the API version to use. Default value is 'v2'
+     * @param $version
+     */
+    public function setAPIVersion($version) {
+        $this->version = $version;
+    }
+
+    /**
+     * Allows you to disable SSL verify peer (useful for development, don't use in production)
+     */
+    public function disableSSLVerification(){
+        $this->ssl_verify_peer = false;
     }
 
     /**
@@ -105,7 +125,7 @@ class Client
      */
     protected function call($http_method, $route, array $params = array(), array $headers = array())
     {
-        $url = $this->api_url . trim($route, '/');
+        $url = $this->api_base_url . '/' . $this->version . '/' . trim($route, '/');
 
         $this->request
             ->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
