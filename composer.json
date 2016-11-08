@@ -1,9 +1,14 @@
 {
     "name": "kobas/api-client",
+    "license": "MIT",
     "authors": [
         {
             "name": "Vittorio Delsignore",
             "email": "vitxd@yahoo.it"
+        },
+        {
+            "name" : "Sean McNamara",
+            "email": "me@seanmcn.com"
         }
     ],
     "minimum-stability": "stable",
