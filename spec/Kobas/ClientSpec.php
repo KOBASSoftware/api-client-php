@@ -11,6 +11,8 @@ use Prophecy\Argument;
 
 class ClientSpec extends ObjectBehavior
 {
+    // Todo Sean: Improve this.
+
     function it_is_initializable()
     {
         $this->shouldHaveType(Client::class);
@@ -20,47 +22,15 @@ class ClientSpec extends ObjectBehavior
     {
         $this->beConstructedWith($signer, $request);
     }
-    
-    function it_requests_venues(Curl $request)
-    {
-        $data = [
-            [
-                'id' => 123,
-                'value' => 'value'
-            ]
-        ];
-        $request->setOption(Argument::type('int'), Argument::any())->willReturn($request);
-        $request->setUrl('https://api.kobas.co.uk/v2/venue')->willReturn($request);
-        $request->execute()->willReturn(json_encode($data));
-        $request->getInfo(Argument::type('int'))->willReturn(200);
-        $request->close()->willReturn($request);
-
-        $this->getVenues()->shouldReturn($data);
-    }
-
-    function it_requests_one_venue(Curl $request)
-    {
-        $data = [
-                'id' => 123,
-                'value' => 'value'
-        ];
-        $request->setOption(Argument::type('int'), Argument::any())->willReturn($request);
-        $request->setUrl('https://api.kobas.co.uk/v2/venue/2')->willReturn($request);
-        $request->execute()->willReturn(json_encode($data));
-        $request->getInfo(Argument::type('int'))->willReturn(200);
-        $request->close()->willReturn($request);
-
-        $this->getVenues(2)->shouldReturn($data);
-    }
 
     function it_throws_exception(Curl $request)
     {
         $request->setOption(Argument::type('int'), Argument::any())->willReturn($request);
-        $request->setUrl('https://api.kobas.co.uk/v2/venue/2')->willReturn($request);
+        $request->setUrl('https://api.kobas.co.uk/v2/data/venue/2')->willReturn($request);
         $request->execute()->willReturn(null);
 
         $request->getInfo(Argument::type('int'))->willReturn(404);
 
-        $this->shouldThrow(new HttpException(404))->during('getVenues', [2]);
+        $this->shouldThrow(new HttpException(404, null))->during('get', ["data/venue/2"]);
     }
 }
