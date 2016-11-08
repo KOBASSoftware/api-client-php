@@ -5,111 +5,150 @@ namespace Kobas;
 
 use Kobas\Exception\HttpException;
 use Kobas\Auth\Signer;
+use Kobas\Request\Curl;
 use Kobas\Request\HttpRequest;
 
+/**
+ * Class Client
+ * @package Kobas
+ */
 class Client
 {
-//	protected $api_url = 'https://api.kobas.dev/v2';
-	protected $api_url = 'https://api.kobas.co.uk/v2';
-	protected $signer;
+    /**
+     * @var string
+     */
+    protected $api_url;
+    /**
+     * @var string
+     */
+    protected $api_base_url = 'https://api.kobas.co.uk';
+//    protected $api_base_url = 'https://api.kobas.dev';
+    /**
+     * @var string
+     */
+    protected $version = 'v2';
+    /**
+     * @var Signer
+     */
+    protected $signer;
+    /**
+     * @var bool
+     */
+    protected $ssl_verify_peer = true;
 
-	public function __construct(Signer $signer, HttpRequest $request)
-	{
-		$this->signer 	= $signer;
-		$this->request	= $request;
-	}
+    /**
+     * Client constructor.
+     * @param Signer $signer
+     * @param HttpRequest|null $request
+     */
+    public function __construct(Signer $signer, HttpRequest $request = null)
+    {
+        $this->signer  = $signer;
+        if($request == null){
+            $request = new Curl();
+        }
+        $this->request = $request;
+        $this->api_url = $this->api_base_url . '/' . $this->version . '/';
+    }
 
-	protected function call($http_method, $service, array $params = array(), array $headers = array())
-	{
-		$url = $this->api_url . '/' . trim($service, '/');
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     */
+    public function get($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('GET', $route, $params, $headers);
+    }
 
-		$this->request
-			->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
-			->setOption(CURLOPT_RETURNTRANSFER, true)
-//			->setOption(CURLOPT_SSL_VERIFYPEER, false)
-			->setOption(CURLOPT_FOLLOWLOCATION, true)
-			->setOption(CURLOPT_ENCODING, '')
-		;
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     */
+    public function post($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('POST', $route, $params, $headers);
+    }
 
-		$headers['Content-Type'] = 'application/json';
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     */
+    public function put($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('PUT', $route, $params, $headers);
+    }
 
-		switch ($http_method)
-		{
-			case 'POST':
-				$this->request->setOption(CURLOPT_POSTFIELDS, json_encode($params));
-				break;
-			case 'DELETE':
-			case 'PUT':
-			$this->request->setOption(CURLOPT_POSTFIELDS, http_build_query($params));
-				break;
-			case 'GET':
-				if (count($params))
-				{
-					$url .= "?" . http_build_query($params);
-					$params = [];
-				}
-				break;
-		}
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     */
+    public function delete($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('DELETE', $route, $params, $headers);
+    }
 
-		$this->request->setUrl($url);
+    /**
+     * @param $http_method
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     * @throws HttpException
+     */
+    protected function call($http_method, $route, array $params = array(), array $headers = array())
+    {
+        $url = $this->api_url . trim($route, '/');
 
-		$headers = $this->signer->signRequest($http_method, $url, $headers, $params);
+        $this->request
+            ->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
+            ->setOption(CURLOPT_RETURNTRANSFER, true)
+            ->setOption(CURLOPT_FOLLOWLOCATION, true)
+            ->setOption(CURLOPT_ENCODING, '');
 
-		$this->request->setOption(CURLOPT_HTTPHEADER, $headers);
+        if (!$this->ssl_verify_peer) {
+            $this->request->setOption(CURLOPT_SSL_VERIFYPEER, false);
+        }
 
-		$result = $this->request->execute();
-		$last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
-		if ($last_response >= 400)
-		{
-			throw new HttpException($last_response, json_encode($result, true));
-		}
+        $headers['Content-Type'] = 'application/json';
 
-		$this->request->close();
+        switch ($http_method) {
+            case 'POST':
+                $this->request->setOption(CURLOPT_POSTFIELDS, json_encode($params));
+                break;
+            case 'DELETE':
+            case 'PUT':
+                $this->request->setOption(CURLOPT_POSTFIELDS, http_build_query($params));
+                break;
+            case 'GET':
+                if (count($params)) {
+                    $url .= "?" . http_build_query($params);
+                    $params = [];
+                }
+                break;
+        }
 
-		return json_decode($result, true);
-	}
+        $this->request->setUrl($url);
 
-	public function getVenues($id = 0)
-	{
-		$service = 'venue';
-		if ($id)
-		{
-			$service .= '/' . $id;
-		}
-		return $this->call('GET', $service);
-	}
+        $headers = $this->signer->signRequest($http_method, $url, $headers, $params);
 
-	public function createCustomer($data)
-	{
-		$service = 'loyalty/customer';
+        $this->request->setOption(CURLOPT_HTTPHEADER, $headers);
 
-		$fields = [
-			'customer',
-			'title',
-			'firstname',
-			'surname',
-			'date_of_birth',
-			'gender',
-			'address_1',
-			'address_2',
-			'city',
-			'postcode',
-			'county',
-			'email',
-			'email_optin',
-			'mobile',
-			'mobile_optin',
-			'venue',
-			];
+        $result        = $this->request->execute();
+        $last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
+        if ($last_response >= 400) {
+            throw new HttpException($last_response, json_encode($result, true));
+        }
 
-		foreach($data as $key => $val)
-		{
-			if (!in_array($key, $fields))
-			{
-				unset($data[$key]);
-			}
-		}
+        $this->request->close();
 
-		return $this->call('POST', $service, $data);
-	}
+        return json_decode($result, true);
+    }
 }
