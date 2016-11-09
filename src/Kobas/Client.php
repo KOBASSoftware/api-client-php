@@ -35,6 +35,11 @@ class Client
     protected $signer;
 
     /**
+     * @var Curl|HttpRequest|null
+     */
+    protected $request;
+
+    /**
      * Client constructor.
      * @param Signer $signer
      * @param HttpRequest|null $request
