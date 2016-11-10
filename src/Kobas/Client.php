@@ -157,7 +157,7 @@ class Client
                 break;
             case 'DELETE':
             case 'PUT':
-                $this->request->setOption(CURLOPT_POSTFIELDS, http_build_query($params));
+                $this->request->setOption(CURLOPT_POSTFIELDS, json_encode($params));
                 break;
             case 'GET':
                 if (count($params)) {
