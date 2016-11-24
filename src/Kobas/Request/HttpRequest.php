@@ -5,6 +5,11 @@ namespace Kobas\Request;
 interface HttpRequest
 {
 	/**
+	 * @return $this
+	 */
+	public function init();
+
+	/**
 	 * @param $url
 	 * @return $this
 	 */

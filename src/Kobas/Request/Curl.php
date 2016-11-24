@@ -6,9 +6,13 @@ class Curl implements HttpRequest
 {
 	private $handle = null;
 
-	public function __construct()
+	public function init()
 	{
-		$this->handle = curl_init();
+		if (is_null($this->handle)) {
+			$this->handle = curl_init();
+		}
+
+		return $this;
 	}
 
 	public function setUrl($url)
@@ -35,6 +39,8 @@ class Curl implements HttpRequest
 	public function close() 
 	{
 		curl_close($this->handle);
+		$this->handle = null;
+
 		return $this;
 	}
 }

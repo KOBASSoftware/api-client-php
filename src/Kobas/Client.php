@@ -140,6 +140,7 @@ class Client
 //        $url .= trim($route, '/');
 
         $this->request
+            ->init()
             ->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
             ->setOption(CURLOPT_RETURNTRANSFER, true)
             ->setOption(CURLOPT_FOLLOWLOCATION, true)
@@ -175,11 +176,12 @@ class Client
 
         $result        = $this->request->execute();
         $last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
+
+        $this->request->close();
+
         if ($last_response >= 400) {
             throw new HttpException($last_response, json_encode($result, true));
         }
-
-        $this->request->close();
 
         return json_decode($result, true);
     }
