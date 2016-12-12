@@ -137,7 +137,10 @@ class Client
         if (!empty($this->version)) {
             $url .= $this->version . '/';
         }
-//        $url .= trim($route, '/');
+
+        $url .= $route;
+
+        //        $url .= trim($route, '/');
 
         $this->request
             ->init()
