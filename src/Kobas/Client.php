@@ -137,7 +137,7 @@ class Client
         if (!empty($this->version)) {
             $url .= $this->version . '/';
         }
-        $url .= trim($route, '/');
+//        $url .= trim($route, '/');
 
         $this->request
             ->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
