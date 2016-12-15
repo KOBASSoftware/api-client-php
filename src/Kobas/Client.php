@@ -140,8 +140,6 @@ class Client
 
         $url .= $route;
 
-        //        $url .= trim($route, '/');
-
         $this->request
             ->init()
             ->setOption(CURLOPT_CUSTOMREQUEST, strtoupper($http_method))
