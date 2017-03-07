@@ -4,32 +4,33 @@ namespace Kobas\Request;
 
 interface HttpRequest
 {
-	/**
-	 * @return $this
-	 */
-	public function init();
+    /**
+     * @return $this
+     */
+    public function init();
 
-	/**
-	 * @param $url
-	 * @return $this
-	 */
-	public function setUrl($url);
+    /**
+     * @param $url
+     * @return $this
+     */
+    public function setUrl($url);
 
-	/**
-	 * @param $name
-	 * @param $value
-	 * @return $this
-	 */
-	public function setOption($name, $value);
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function setOption($name, $value);
 
-	/**
-	 * @return mixed
-	 */
-	public function execute();
-	public function getInfo($name);
+    /**
+     * @return mixed
+     */
+    public function execute();
 
-	/**
-	 * @return $this
-	 */
-	public function close();
+    public function getInfo($name);
+
+    /**
+     * @return $this
+     */
+    public function close();
 }

@@ -2,7 +2,6 @@
 
 namespace spec\Kobas\Auth;
 
-use PhpSpec\Exception\Example\FailureException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -35,7 +34,8 @@ class SignerSpec extends ObjectBehavior
     {
         $url = 'https://api.kobas.co.uk/v2/venue';
 
-        $result = $this->signRequest('POST', $url, ['Content-Type' => 'application/json'], ['name' => 'New venue', 'description' => 'A good description']);
+        $result = $this->signRequest('POST', $url, ['Content-Type' => 'application/json'],
+            ['name' => 'New venue', 'description' => 'A good description']);
 
         $result->shouldHaveValueLike('Authorization: Bearer ');
         $result->shouldHaveValueLike('X-Kbs-Date: ');
@@ -56,10 +56,8 @@ class SignerSpec extends ObjectBehavior
             },
             'haveValueLike' => function ($subject, $value) {
                 $found = false;
-                foreach($subject as $val)
-                {
-                    if (strstr($val, $value))
-                    {
+                foreach ($subject as $val) {
+                    if (strstr($val, $value)) {
                         $found = true;
                     }
                 }

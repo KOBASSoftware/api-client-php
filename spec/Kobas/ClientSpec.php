@@ -11,8 +11,6 @@ use Prophecy\Argument;
 
 class ClientSpec extends ObjectBehavior
 {
-    // Todo Sean: Improve this.
-
     function it_is_initializable()
     {
         $this->shouldHaveType(Client::class);
