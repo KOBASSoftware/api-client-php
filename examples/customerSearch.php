@@ -6,4 +6,4 @@ $staffSecret = ''; // Staff API Key
 $signer = new \Kobas\Auth\Signer($companyId, $staffId, $staffSecret);
 $client = new \Kobas\Client($signer);
 
-$venues = $client->get('data/venue');
+$venues = $client->get('customer/search', ['email' => 'example@example.com']);
