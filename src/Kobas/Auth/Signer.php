@@ -15,7 +15,11 @@ class Signer
 
 
     protected $company_id;
-    protected $staff_id;
+
+    /**
+     * @var string
+     */
+    protected $identifier;
 
     protected $region = 'uk-lon-1';
     protected $terminator = 'kbs_request';
@@ -23,10 +27,10 @@ class Signer
     protected $signed_headers = array();
     protected $signature;
 
-    public function __construct($company_id, $staff_id, $secret)
+    public function __construct($company_id, $identifier, $secret)
     {
         $this->setCompanyId($company_id);
-        $this->setStaffId($staff_id);
+        $this->setIdentifier($identifier);
         $this->setSecret($secret);
     }
 
@@ -282,7 +286,7 @@ class Signer
     protected function authorization($time, $signature)
     {
         return $this->auth_type .
-            ' Credential=' . $this->getCompanyId() . '-' . $this->getStaffId() .
+            ' Credential=' . $this->getCompanyId() . '-' . $this->getIdentifier() .
             '/' . $this->credentialScope($time) . ',' .
             'SignedHeaders=' . implode(';', $this->signed_headers) . ',' .
             'Signature=' . $this->hex16($signature);
@@ -307,20 +311,21 @@ class Signer
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getStaffId()
+    public function getIdentifier(): string
     {
-        return $this->staff_id;
+        return $this->identifier;
     }
 
     /**
-     * @param mixed $staff_id
-     * @return $this
+     * @param string $identifier
+     * @return Signer
      */
-    public function setStaffId($staff_id)
+    public function setIdentifier(string $identifier): Signer
     {
-        $this->staff_id = $staff_id;
+        $this->identifier = $identifier;
+
         return $this;
     }
 
