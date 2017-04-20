@@ -1,9 +1,12 @@
 <?php
-$companyId   = 0; // Company ID
-$staffId     = 0; //Staff ID
-$staffSecret = ''; // Staff API Key
 
-$signer = new \Kobas\Auth\Signer($companyId, $staffId, $staffSecret);
-$client = new \Kobas\Client($signer);
+require __DIR__ . '/../vendor/autoload.php';
 
-$venues = $client->get('customer/search', ['email' => 'example@example.com']);
+$companyId  = 2716; // Company ID
+$identifier = 'sid:1'; // Identifier
+$secret     = '...'; // API Key
+
+$signer = (new \Kobas\Auth\Signer($companyId, $identifier, $secret));
+$client = (new \Kobas\Client($signer));
+
+$request = $client->get('customer/search', ['email' => 'example@example.com']);

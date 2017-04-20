@@ -9,12 +9,12 @@ Signs API requests and allows interaction via cURL methods.
 /**
  * Setup
  */
-$companyId   = 0; // Company ID
-$staffId     = 0; //Staff ID
-$staffSecret = ''; // Staff API Key
+$companyId  = 0; // Company ID
+$identifier = 'sid:?/imid:?'; // Identifier
+$secret     = '...'; // API Key
 
-$signer = new \Kobas\Auth\Signer($companyId, $staffId, $staffSecret);
-$client = new \Kobas\Client($signer);
+$signer = (new \Kobas\Auth\Signer($companyId, $identifier, $secret));
+$client = (new \Kobas\Client($signer));
 
 /**
  * Usage
