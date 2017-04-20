@@ -19,7 +19,7 @@ $client = (new \Kobas\Client($signer));
 /**
  * Usage
  */
-$venues = $client->get('data/venue');
+$request = $client->get('customer/search', ['email' => 'example@example.com']);
 ```
 
 ## Client Functions
