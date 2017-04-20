@@ -9,17 +9,17 @@ Signs API requests and allows interaction via cURL methods.
 /**
  * Setup
  */
-$companyId   = 0; // Company ID
-$staffId     = 0; //Staff ID
-$staffSecret = ''; // Staff API Key
+$companyId  = 0; // Company ID
+$identifier = 'sid:?/imid:?'; // Identifier either sid: (staff id) or imid: (integration member id) followed by the id provided.
+$secret     = '...'; // API Key
 
-$signer = new \Kobas\Auth\Signer($companyId, $staffId, $staffSecret);
-$client = new \Kobas\Client($signer);
+$signer = (new \Kobas\Auth\Signer($companyId, $identifier, $secret));
+$client = (new \Kobas\Client($signer));
 
 /**
  * Usage
  */
-$venues = $client->get('data/venue');
+$request = $client->get('customer/search', ['email' => 'example@example.com']);
 ```
 
 ## Client Functions
