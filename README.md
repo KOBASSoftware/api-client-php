@@ -10,7 +10,7 @@ Signs API requests and allows interaction via cURL methods.
  * Setup
  */
 $companyId  = 0; // Company ID
-$identifier = 'sid:?/imid:?'; // Identifier
+$identifier = 'sid:?/imid:?'; // Identifier either sid: (staff id) or imid: (integration member id) followed by the id provided.
 $secret     = '...'; // API Key
 
 $signer = (new \Kobas\Auth\Signer($companyId, $identifier, $secret));
