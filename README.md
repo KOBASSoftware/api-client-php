@@ -19,7 +19,8 @@ $client = (new \Kobas\Client($signer));
 /**
  * Usage
  */
-$request = $client->get('customer/search', ['email' => 'example@example.com']);
+$response = $client->get('customer/search', ['email' => 'example@example.com']);
+echo json_encode($response, JSON_PRETTY_PRINT);
 ```
 
 ## Client Functions
