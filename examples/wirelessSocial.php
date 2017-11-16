@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require '../vendor/autoload.php';
 
 $companyId  = 2716; // Company ID
 $identifier = 'imid:1'; // Identifier

@@ -164,7 +164,7 @@ class Client
             case 'GET':
                 if (count($params)) {
                     $url .= "?" . http_build_query($params);
-                    $params = [];
+                    $params = array();
                 }
                 break;
         }

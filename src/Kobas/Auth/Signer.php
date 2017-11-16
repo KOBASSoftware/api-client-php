@@ -50,7 +50,7 @@ class Signer
 
         $signed_headers['Authorization'] = $this->authorization($time, $signature);
 
-        $headers = [];
+        $headers = array();
         foreach ($signed_headers as $key => $value) {
             $headers[] = $key . ': ' . $value;
         }
@@ -313,7 +313,7 @@ class Signer
     /**
      * @return string
      */
-    public function getIdentifier(): string
+    public function getIdentifier()
     {
         return $this->identifier;
     }
@@ -322,7 +322,7 @@ class Signer
      * @param string $identifier
      * @return Signer
      */
-    public function setIdentifier(string $identifier): Signer
+    public function setIdentifier($identifier)
     {
         $this->identifier = $identifier;
 
