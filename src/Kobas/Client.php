@@ -45,12 +45,18 @@ class Client
     protected $headers;
 
     /**
+     * @var array
+     */
+    protected $curl_options;
+
+    /**
      * Client constructor.
      * @param Signer $signer
      * @param HttpRequest|null $request
      * @param array $headers
+     * @param array $curl_options
      */
-    public function __construct(Signer $signer, HttpRequest $request = null, $headers = [])
+    public function __construct(Signer $signer, HttpRequest $request = null, $headers = array(), $curl_options = array())
     {
         $this->signer = $signer;
         if ($request == null) {
@@ -58,6 +64,7 @@ class Client
         }
         $this->request = $request;
         $this->headers = $headers;
+        $this->curl_options = $curl_options;
     }
 
     /**
@@ -161,6 +168,10 @@ class Client
             ->setOption(CURLOPT_RETURNTRANSFER, true)
             ->setOption(CURLOPT_FOLLOWLOCATION, true)
             ->setOption(CURLOPT_ENCODING, '');
+
+        foreach($this->curl_options as $option => $value) {
+            $this->request->setOption($option, $value);
+        }
 
         if (!$this->ssl_verify_peer) {
             $this->request->setOption(CURLOPT_SSL_VERIFYPEER, false);
