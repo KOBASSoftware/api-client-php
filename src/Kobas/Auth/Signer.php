@@ -12,21 +12,20 @@ class Signer
     protected $request_timestamp;
     protected $secret;
     protected $params;
-
-
     protected $company_id;
-
-    /**
-     * @var string
-     */
     protected $identifier;
-
     protected $region = 'uk-lon-1';
     protected $terminator = 'kbs_request';
     protected $auth_type = 'Bearer';
     protected $signed_headers = array();
     protected $signature;
 
+    /**
+     * Signer constructor.
+     * @param $company_id
+     * @param $identifier
+     * @param $secret
+     */
     public function __construct($company_id, $identifier, $secret)
     {
         $this->setCompanyId($company_id);
@@ -34,6 +33,13 @@ class Signer
         $this->setSecret($secret);
     }
 
+    /**
+     * @param $method
+     * @param $url
+     * @param array $signed_headers
+     * @param array $data
+     * @return array
+     */
     public function signRequest($method, $url, array $signed_headers = array(), array $data = array())
     {
         $time = time();
@@ -58,6 +64,10 @@ class Signer
         return $headers;
     }
 
+    /**
+     * @param $url
+     * @return $this
+     */
     public function setUrl($url)
     {
         $this->parsed_url = parse_url($url);
@@ -424,6 +434,11 @@ class Signer
         return $this;
     }
 
+    /**
+     * @param $array
+     * @param int $sort_flags
+     * @return bool
+     */
     protected function sortArray(&$array, $sort_flags = SORT_REGULAR)
     {
         if (!is_array($array)) {

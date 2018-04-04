@@ -86,44 +86,52 @@ class Client
         $this->ssl_verify_peer = false;
     }
 
+
     /**
      * @param $route
      * @param array $params
      * @param array $headers
      * @return mixed
+     * @throws HttpException
      */
     public function get($route, array $params = array(), array $headers = array())
     {
         return $this->call('GET', $route, $params, $headers);
     }
 
+
     /**
      * @param $route
      * @param array $params
      * @param array $headers
      * @return mixed
+     * @throws HttpException
      */
     public function post($route, array $params = array(), array $headers = array())
     {
         return $this->call('POST', $route, $params, $headers);
     }
 
-    /**
-     * @param $route
-     * @param array $params
-     * @param array $headers
-     * @return mixed
-     */
-    public function put($route, array $params = array(), array $headers = array())
-    {
-        return $this->call('PUT', $route, $params, $headers);
-    }
 
     /**
      * @param $route
      * @param array $params
      * @param array $headers
      * @return mixed
+     * @throws HttpException
+     */
+    public function put($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('PUT', $route, $params, $headers);
+    }
+
+
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     * @throws HttpException
      */
     public function delete($route, array $params = array(), array $headers = array())
     {
@@ -184,7 +192,7 @@ class Client
 
         $this->request->setOption(CURLOPT_HTTPHEADER, $headers);
 
-        $result        = $this->request->execute();
+        $result = $this->request->execute();
         $last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
 
         $this->request->close();
