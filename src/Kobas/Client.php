@@ -3,6 +3,7 @@
 namespace Kobas;
 
 
+use Kobas\Exception\CurlException;
 use Kobas\Exception\HttpException;
 use Kobas\Auth\Signer;
 use Kobas\Request\Curl;
@@ -100,6 +101,7 @@ class Client
      * @param array $headers
      * @return mixed
      * @throws HttpException
+     * @throws CurlException
      */
     public function get($route, array $params = array(), array $headers = array())
     {
@@ -113,6 +115,7 @@ class Client
      * @param array $headers
      * @return mixed
      * @throws HttpException
+     * @throws CurlException
      */
     public function post($route, array $params = array(), array $headers = array())
     {
@@ -126,6 +129,7 @@ class Client
      * @param array $headers
      * @return mixed
      * @throws HttpException
+     * @throws CurlException
      */
     public function put($route, array $params = array(), array $headers = array())
     {
@@ -139,6 +143,7 @@ class Client
      * @param array $headers
      * @return mixed
      * @throws HttpException
+     * @throws CurlException
      */
     public function delete($route, array $params = array(), array $headers = array())
     {
@@ -152,6 +157,7 @@ class Client
      * @param array $headers
      * @return mixed
      * @throws HttpException
+     * @throws CurlException
      */
     protected function call($http_method, $route, array $params = array(), array $headers = array())
     {
@@ -169,7 +175,7 @@ class Client
             ->setOption(CURLOPT_FOLLOWLOCATION, true)
             ->setOption(CURLOPT_ENCODING, '');
 
-        foreach($this->curl_options as $option => $value) {
+        foreach ($this->curl_options as $option => $value) {
             $this->request->setOption($option, $value);
         }
 
@@ -203,7 +209,13 @@ class Client
 
         $this->request->setOption(CURLOPT_HTTPHEADER, $headers);
 
+
         $result = $this->request->execute();
+
+        if ($this->request->getErrorNumber()) {
+            throw new CurlException($this->request->getErrorMessage(), $this->request->getErrorNumber());
+        }
+
         $last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
 
         $this->request->close();

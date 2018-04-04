@@ -2,6 +2,7 @@
 
 namespace Kobas\Request;
 
+
 /**
  * Class Curl
  * @package Kobas\Request
@@ -60,6 +61,20 @@ class Curl implements HttpRequest
     public function getInfo($name)
     {
         return curl_getinfo($this->handle, $name);
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getErrorNumber() {
+        return curl_errno($this->handle);
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getErrorMessage() {
+        return curl_error($this->handle);
     }
 
     /**

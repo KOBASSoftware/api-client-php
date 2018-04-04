@@ -2,6 +2,10 @@
 
 namespace Kobas\Request;
 
+/**
+ * Interface HttpRequest
+ * @package Kobas\Request
+ */
 interface HttpRequest
 {
     /**
@@ -27,7 +31,23 @@ interface HttpRequest
      */
     public function execute();
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function getInfo($name);
+
+
+    /**
+     * @return mixed
+     */
+    public function getErrorNumber();
+
+    /**
+     * @return mixed
+     */
+    public function getErrorMessage();
+
 
     /**
      * @return $this
