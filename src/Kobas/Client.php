@@ -40,17 +40,24 @@ class Client
     protected $request;
 
     /**
+     * @var array
+     */
+    protected $headers;
+
+    /**
      * Client constructor.
      * @param Signer $signer
      * @param HttpRequest|null $request
+     * @param array $headers
      */
-    public function __construct(Signer $signer, HttpRequest $request = null)
+    public function __construct(Signer $signer, HttpRequest $request = null, $headers = [])
     {
         $this->signer = $signer;
         if ($request == null) {
             $request = new Curl();
         }
         $this->request = $request;
+        $this->headers = $headers;
     }
 
     /**
@@ -150,6 +157,8 @@ class Client
         if (!$this->ssl_verify_peer) {
             $this->request->setOption(CURLOPT_SSL_VERIFYPEER, false);
         }
+
+        $headers = array_merge($this->headers, $headers);
 
         $headers['Content-Type'] = 'application/json';
 
