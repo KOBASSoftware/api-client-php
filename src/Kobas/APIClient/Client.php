@@ -72,7 +72,7 @@ class Client
     /**
      * @return string
      */
-    public function getApiBaseUrl(): string
+    public function getApiBaseUrl()
     {
         return $this->api_base_url;
     }
@@ -80,7 +80,7 @@ class Client
     /**
      * @return string
      */
-    public function getVersion(): string
+    public function getVersion()
     {
         return $this->version;
     }

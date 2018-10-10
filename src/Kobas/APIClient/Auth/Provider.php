@@ -48,18 +48,18 @@ class Provider
      * @param string $clientSecret
      * @param string $scopes
      */
-    public function __construct(int $companyId, string $clientId, string $clientSecret, string $scopes)
+    public function __construct($companyId, $clientId, $clientSecret, $scopes)
     {
-        $this->companyId = $companyId;
-        $this->clientId = $clientId;
-        $this->clientSecret = $clientSecret;
-        $this->scopes = $scopes;
+        $this->companyId = (int)$companyId;
+        $this->clientId = (string)$clientId;
+        $this->clientSecret = (string)$clientSecret;
+        $this->scopes = (string)$scopes;
     }
 
     /**
      * @return string
      */
-    public function getUrl(): string
+    public function getUrl()
     {
         return $this->url;
     }
@@ -75,7 +75,7 @@ class Provider
     /**
      * @return int
      */
-    public function getCompanyId(): int
+    public function getCompanyId()
     {
         return $this->companyId;
     }
