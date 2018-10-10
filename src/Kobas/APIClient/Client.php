@@ -1,16 +1,16 @@
 <?php
 
-namespace Kobas;
+namespace Kobas\APIClient;
 
-
-use Kobas\Exception\CurlException;
-use Kobas\Exception\HttpException;
-use Kobas\Auth\Signer;
-use Kobas\Request\Curl;
-use Kobas\Request\HttpRequest;
+use Kobas\APIClient\Auth\Provider;
+use Kobas\APIClient\Exception\CurlException;
+use Kobas\APIClient\Exception\HttpException;
+use Kobas\APIClient\Request\Curl;
+use Kobas\APIClient\Request\HttpRequest;
 
 /**
  * Class Client
+ *
  * @package Kobas
  */
 class Client
@@ -23,17 +23,12 @@ class Client
     /**
      * @var string
      */
-    protected $version = 'v2';
+    protected $version = 'v3';
 
     /**
-     * @var bool
+     * @var Provider
      */
-    protected $ssl_verify_peer = true;
-
-    /**
-     * @var Signer
-     */
-    protected $signer;
+    protected $oAuthProvider;
 
     /**
      * @var Curl|HttpRequest|null
@@ -50,16 +45,22 @@ class Client
      */
     protected $curl_options;
 
+
     /**
      * Client constructor.
-     * @param Signer $signer
+     *
+     * @param Provider $oAuthProvider
      * @param HttpRequest|null $request
      * @param array $headers
      * @param array $curl_options
      */
-    public function __construct(Signer $signer, HttpRequest $request = null, $headers = array(), $curl_options = array())
-    {
-        $this->signer = $signer;
+    public function __construct(
+        Provider $oAuthProvider,
+        HttpRequest $request = null,
+        $headers = array(),
+        $curl_options = array()
+    ) {
+        $this->oAuthProvider = $oAuthProvider;
         if ($request == null) {
             $request = new Curl();
         }
@@ -69,7 +70,24 @@ class Client
     }
 
     /**
+     * @return string
+     */
+    public function getApiBaseUrl()
+    {
+        return $this->api_base_url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
      * Allows you to set the API Base URL. Default value is 'https://api.kobas.co.uk'
+     *
      * @param $url
      */
     public function setAPIBaseURL($url)
@@ -79,21 +97,13 @@ class Client
 
     /**
      * Allows you to set the API version to use. Default value is 'v2'
+     *
      * @param $version
      */
     public function setAPIVersion($version)
     {
         $this->version = $version;
     }
-
-    /**
-     * Allows you to disable SSL verify peer (useful for development, don't use in production)
-     */
-    public function disableSSLVerification()
-    {
-        $this->ssl_verify_peer = false;
-    }
-
 
     /**
      * @param $route
@@ -106,48 +116,6 @@ class Client
     public function get($route, array $params = array(), array $headers = array())
     {
         return $this->call('GET', $route, $params, $headers);
-    }
-
-
-    /**
-     * @param $route
-     * @param array $params
-     * @param array $headers
-     * @return mixed
-     * @throws HttpException
-     * @throws CurlException
-     */
-    public function post($route, array $params = array(), array $headers = array())
-    {
-        return $this->call('POST', $route, $params, $headers);
-    }
-
-
-    /**
-     * @param $route
-     * @param array $params
-     * @param array $headers
-     * @return mixed
-     * @throws HttpException
-     * @throws CurlException
-     */
-    public function put($route, array $params = array(), array $headers = array())
-    {
-        return $this->call('PUT', $route, $params, $headers);
-    }
-
-
-    /**
-     * @param $route
-     * @param array $params
-     * @param array $headers
-     * @return mixed
-     * @throws HttpException
-     * @throws CurlException
-     */
-    public function delete($route, array $params = array(), array $headers = array())
-    {
-        return $this->call('DELETE', $route, $params, $headers);
     }
 
     /**
@@ -179,12 +147,9 @@ class Client
             $this->request->setOption($option, $value);
         }
 
-        if (!$this->ssl_verify_peer) {
-            $this->request->setOption(CURLOPT_SSL_VERIFYPEER, false);
-        }
-
         $headers = array_merge($this->headers, $headers);
-
+        $headers['Authorization'] = "Bearer " . $this->oAuthProvider->getAccessToken();
+        $headers['x-kobas-company-id'] = $this->oAuthProvider->getCompanyId();
         $headers['Content-Type'] = 'application/json';
 
         switch ($http_method) {
@@ -198,17 +163,18 @@ class Client
             case 'GET':
                 if (count($params)) {
                     $url .= "?" . http_build_query($params);
-                    $params = array();
                 }
                 break;
         }
 
         $this->request->setUrl($url);
 
-        $headers = $this->signer->signRequest($http_method, $url, $headers, $params);
+        $requestHeaders = array();
+        foreach ($headers as $key => $value) {
+            $requestHeaders[] = $key . ': ' . $value;
+        }
 
-        $this->request->setOption(CURLOPT_HTTPHEADER, $headers);
-
+        $this->request->setOption(CURLOPT_HTTPHEADER, $requestHeaders);
 
         $result = $this->request->execute();
 
@@ -221,9 +187,48 @@ class Client
         $this->request->close();
 
         if ($last_response >= 400) {
-            throw new HttpException($last_response, json_encode(json_decode($result, true), true));
+            throw new HttpException(json_encode(json_decode($result, true), true), $last_response);
         }
 
         return json_decode($result, true);
+    }
+
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     * @throws HttpException
+     * @throws CurlException
+     */
+    public function post($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('POST', $route, $params, $headers);
+    }
+
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     * @throws HttpException
+     * @throws CurlException
+     */
+    public function put($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('PUT', $route, $params, $headers);
+    }
+
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     * @throws HttpException
+     * @throws CurlException
+     */
+    public function delete($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('DELETE', $route, $params, $headers);
     }
 }

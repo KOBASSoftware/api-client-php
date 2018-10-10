@@ -1,11 +1,11 @@
 <?php
 
-namespace Kobas\Request;
-
+namespace Kobas\APIClient\Request;
 
 /**
  * Class Curl
- * @package Kobas\Request
+ *
+ * @package Kobas\APIClient\Request
  */
 class Curl implements HttpRequest
 {
@@ -46,6 +46,15 @@ class Curl implements HttpRequest
         return $this;
     }
 
+
+    /**
+     * @return null
+     */
+    public function getHandle()
+    {
+        return $this->handle;
+    }
+
     /**
      * @return mixed
      */
@@ -66,14 +75,16 @@ class Curl implements HttpRequest
     /**
      * @return int|mixed
      */
-    public function getErrorNumber() {
+    public function getErrorNumber()
+    {
         return curl_errno($this->handle);
     }
 
     /**
      * @return mixed|string
      */
-    public function getErrorMessage() {
+    public function getErrorMessage()
+    {
         return curl_error($this->handle);
     }
 

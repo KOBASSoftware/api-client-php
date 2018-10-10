@@ -2,11 +2,12 @@
 
 require '../vendor/autoload.php';
 
-$companyId  = 2716; // Company ID
-$identifier = 'sid:1'; // Identifier
-$secret     = '...'; // API Key
+$companyId = 0000;// company id provided by Kobas
+$clientId = '';// client id provided by Kobas
+$clientSecret = '';// client secret provided by Kobas
+$clientScope = ''; // client scope provided by Kobas
 
-$signer = (new \Kobas\Auth\Signer($companyId, $identifier, $secret));
-$client = (new \Kobas\Client($signer));
+$provider = new \Kobas\APIClient\Auth\Provider($companyId, $clientId, $clientSecret, $clientScope);
+$client = new \Kobas\APIClient\Client($provider);
 
 $request = $client->get('customer/search', array('email' => 'example@example.com'));

@@ -1,5 +1,11 @@
-KOBAS API Client
-=============
+# Kobas API Client
+[![Latest Version](https://img.shields.io/github/release/KOBASSoftware/api-client-php.svg?style=flat-square)](https://github.com/KOBASSoftware/api-client-php/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/travis/KOBASSoftware/api-client-php/master.svg?style=flat-square)](https://travis-ci.org/KOBASSoftware/api-client-php)
+[![Documentation](https://img.shields.io/badge/documentation-passing-brightgreen.svg?style=flat-square)](https://api-doc.kobas.co.uk/)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/KOBASSoftware/api-client-php.svg?style=flat-square)](https://scrutinizer-ci.com/g/KOBASSoftware/api-client-php/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/KOBASSoftware/api-client-php.svg?style=flat-square)](https://scrutinizer-ci.com/g/KOBASSoftware/api-client-php)
+[![Total Downloads](https://img.shields.io/packagist/dt/kobas/api-client.svg?style=flat-square)](https://packagist.org/packages/KOBASSoftware/api-client-php)
 
 Signs API requests and allows interaction via cURL methods.
 
@@ -9,12 +15,13 @@ Signs API requests and allows interaction via cURL methods.
 /**
  * Setup
  */
-$companyId  = 0; // Company ID
-$identifier = 'sid:?/imid:?'; // Identifier either sid: (staff id) or imid: (integration member id) followed by the id provided.
-$secret     = '...'; // API Key
+$companyId = 0000;// company id provided by Kobas
+$clientId = '';// client id provided by Kobas
+$clientSecret = '';// client secret provided by Kobas
+$clientScope = ''; // client scope provided by Kobas
 
-$signer = (new \Kobas\Auth\Signer($companyId, $identifier, $secret));
-$client = (new \Kobas\Client($signer));
+$provider = new \Kobas\APIClient\Auth\Provider($companyId, $clientId, $clientSecret, $clientScope);
+$client = new \Kobas\APIClient\Client($provider);
 
 /**
  * Usage
@@ -42,6 +49,3 @@ Allows over-riding the base URL (only really needed for development)
 
 ## setAPIVersion($version)
 Allows over-riding of the API version. Might be useful in future?
-
-## disableSSLVerification()
-Disables SSL Verify Peer. Needed for development, should never be used in production
