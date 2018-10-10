@@ -16,7 +16,7 @@ use League\OAuth2\Client\Token\AccessToken;
 class Provider
 {
     /**
-     * @var AccessToken
+     * @var AccessToken|null
      */
     protected static $token;
     /**

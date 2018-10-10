@@ -187,7 +187,7 @@ class Client
         $this->request->close();
 
         if ($last_response >= 400) {
-            throw new HttpException(json_encode(json_decode($result, true), true), $last_response);
+            throw new HttpException(json_encode(json_decode($result, true)), $last_response);
         }
 
         return json_decode($result, true);
