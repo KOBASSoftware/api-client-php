@@ -1,11 +1,11 @@
 <?php
 
-namespace Kobas\Request;
+namespace Kobas\APIClient\Request;
 
 
 /**
  * Class Curl
- * @package Kobas\Request
+ * @package Kobas\APIClient\Request
  */
 class Curl implements HttpRequest
 {
@@ -44,6 +44,16 @@ class Curl implements HttpRequest
     {
         curl_setopt($this->handle, $name, $value);
         return $this;
+    }
+
+
+
+    /**
+     * @return null
+     */
+    public function getHandle()
+    {
+        return $this->handle;
     }
 
     /**

@@ -1,11 +1,11 @@
 <?php
 
-namespace Kobas\Exception;
+namespace Kobas\APIClient\Exception;
 
 
 /**
  * Class HttpException
- * @package Kobas\Exception
+ * @package Kobas\APIClient\Exception
  */
 class HttpException extends \Exception
 {
@@ -16,11 +16,11 @@ class HttpException extends \Exception
 
     /**
      * HttpException constructor.
-     * @param $http_code
      * @param string $message
+     * @param $code
      */
-    public function __construct($http_code, $message = '')
+    public function __construct($message, $code)
     {
-        parent::__construct($message, $http_code);
+        parent::__construct($message, $code);
     }
 }

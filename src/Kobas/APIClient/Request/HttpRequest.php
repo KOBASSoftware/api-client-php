@@ -1,10 +1,10 @@
 <?php
 
-namespace Kobas\Request;
+namespace Kobas\APIClient\Request;
 
 /**
  * Interface HttpRequest
- * @package Kobas\Request
+ * @package Kobas\APIClient\Request
  */
 interface HttpRequest
 {
