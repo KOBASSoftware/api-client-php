@@ -2,7 +2,6 @@
 
 namespace Kobas\APIClient\Exception;
 
-
 /**
  * Class AuthenticationException
  * @package Kobas\APIClient\Exception

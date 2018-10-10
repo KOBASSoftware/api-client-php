@@ -2,7 +2,6 @@
 
 namespace Kobas\APIClient\Exception;
 
-
 /**
  * Class CurlException
  * @package Kobas\APIClient\Exception

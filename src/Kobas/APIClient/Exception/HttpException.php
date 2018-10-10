@@ -2,7 +2,6 @@
 
 namespace Kobas\APIClient\Exception;
 
-
 /**
  * Class HttpException
  * @package Kobas\APIClient\Exception

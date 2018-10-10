@@ -57,19 +57,19 @@ class Provider
     }
 
     /**
-     * @param $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-
-    /**
      * @return string
      */
     public function getUrl(): string
     {
         return $this->url;
+    }
+
+    /**
+     * @param $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
     }
 
     /**
@@ -92,9 +92,9 @@ class Provider
         if (!self::$token instanceof AccessToken || self::$token->hasExpired()) {
             try {
                 self::$token = $provider->getAccessToken('client_credentials', ['scope' => $this->scopes]);
-            } catch(IdentityProviderException $e) {
+            } catch (IdentityProviderException $e) {
                 throw new AuthenticationException($e->getMessage(), $e->getCode());
-            } catch(ConnectException $e) {
+            } catch (ConnectException $e) {
                 throw new CurlException($e->getMessage(), $e->getCode());
             }
         }

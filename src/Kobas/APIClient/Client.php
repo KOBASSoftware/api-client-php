@@ -231,5 +231,4 @@ class Client
     {
         return $this->call('DELETE', $route, $params, $headers);
     }
-
 }
