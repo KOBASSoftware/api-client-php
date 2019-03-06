@@ -89,15 +89,15 @@ class Provider
     {
         $provider = $this->getProvider();
 
-        if (
-            !is_array(self::$tokens) ||
+        if (!is_array(self::$tokens) ||
             !array_key_exists($provider->companyId, self::$tokens) ||
             !self::$tokens[$provider->companyId] instanceof AccessToken ||
             self::$tokens[$provider->companyId]->hasExpired()
         ) {
             try {
                 self::$tokens[$provider->companyId] = $provider->getAccessToken(
-                    'client_credentials', ['scope' => $this->scopes]
+                    'client_credentials',
+                    ['scope' => $this->scopes]
                 );
             } catch (IdentityProviderException $e) {
                 throw new AuthenticationException($e->getMessage(), $e->getCode());
