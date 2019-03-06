@@ -110,13 +110,15 @@ class Client
      * @param array $params
      * @param array $headers
      * @return mixed
-     * @throws HttpException
      * @throws CurlException
+     * @throws Exception\AuthenticationException
+     * @throws HttpException
      */
     public function get($route, array $params = array(), array $headers = array())
     {
         return $this->call('GET', $route, $params, $headers);
     }
+
 
     /**
      * @param $http_method
@@ -124,8 +126,9 @@ class Client
      * @param array $params
      * @param array $headers
      * @return mixed
-     * @throws HttpException
      * @throws CurlException
+     * @throws Exception\AuthenticationException
+     * @throws HttpException
      */
     protected function call($http_method, $route, array $params = array(), array $headers = array())
     {
@@ -193,39 +196,45 @@ class Client
         return json_decode($result, true);
     }
 
+
     /**
      * @param $route
      * @param array $params
      * @param array $headers
      * @return mixed
-     * @throws HttpException
      * @throws CurlException
+     * @throws Exception\AuthenticationException
+     * @throws HttpException
      */
     public function post($route, array $params = array(), array $headers = array())
     {
         return $this->call('POST', $route, $params, $headers);
     }
 
-    /**
-     * @param $route
-     * @param array $params
-     * @param array $headers
-     * @return mixed
-     * @throws HttpException
-     * @throws CurlException
-     */
-    public function put($route, array $params = array(), array $headers = array())
-    {
-        return $this->call('PUT', $route, $params, $headers);
-    }
 
     /**
      * @param $route
      * @param array $params
      * @param array $headers
      * @return mixed
-     * @throws HttpException
      * @throws CurlException
+     * @throws Exception\AuthenticationException
+     * @throws HttpException
+     */
+    public function put($route, array $params = array(), array $headers = array())
+    {
+        return $this->call('PUT', $route, $params, $headers);
+    }
+
+
+    /**
+     * @param $route
+     * @param array $params
+     * @param array $headers
+     * @return mixed
+     * @throws CurlException
+     * @throws Exception\AuthenticationException
+     * @throws HttpException
      */
     public function delete($route, array $params = array(), array $headers = array())
     {
