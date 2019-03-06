@@ -16,9 +16,9 @@ use League\OAuth2\Client\Token\AccessToken;
 class Provider
 {
     /**
-     * @var AccessToken|null
+     * @var AccessToken[]
      */
-    protected static $token;
+    protected static $tokens;
     /**
      * @var int
      */
@@ -89,9 +89,9 @@ class Provider
     {
         $provider = $this->getProvider();
 
-        if (!self::$token instanceof AccessToken || self::$token->hasExpired()) {
+        if (!is_array(self::$tokens) || !array_key_exists($provider->companyId, self::$tokens) || !self::$tokens[$provider->companyId] instanceof AccessToken || self::$tokens[$provider->companyId]->hasExpired()) {
             try {
-                self::$token = $provider->getAccessToken('client_credentials', ['scope' => $this->scopes]);
+                self::$tokens[$provider->companyId] = $provider->getAccessToken('client_credentials', ['scope' => $this->scopes]);
             } catch (IdentityProviderException $e) {
                 throw new AuthenticationException($e->getMessage(), $e->getCode());
             } catch (ConnectException $e) {
@@ -99,7 +99,7 @@ class Provider
             }
         }
 
-        return self::$token->getToken();
+        return self::$tokens[$provider->companyId]->getToken();
     }
 
     /**
