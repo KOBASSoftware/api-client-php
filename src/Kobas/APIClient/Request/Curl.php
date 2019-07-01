@@ -10,7 +10,7 @@ namespace Kobas\APIClient\Request;
 class Curl implements HttpRequest
 {
     /**
-     * @var null|false|resource
+     * @var null|resource
      */
     private $handle = null;
 
@@ -48,7 +48,7 @@ class Curl implements HttpRequest
 
 
     /**
-     * @return false| resource
+     * @return null|resource
      */
     public function getHandle()
     {
@@ -81,7 +81,7 @@ class Curl implements HttpRequest
     }
 
     /**
-     * @return int|mixed
+     * @return int
      */
     public function getErrorNumber()
     {
@@ -89,7 +89,7 @@ class Curl implements HttpRequest
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
     public function getErrorMessage()
     {
