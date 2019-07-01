@@ -46,6 +46,9 @@ class Client
     protected $curl_options;
 
 
+    protected $request_info;
+
+
     /**
      * Client constructor.
      *
@@ -185,6 +188,7 @@ class Client
             throw new CurlException($this->request->getErrorMessage(), $this->request->getErrorNumber());
         }
 
+        $this->request_info = $this->request->getAllInfo();
         $last_response = $this->request->getInfo(CURLINFO_HTTP_CODE);
 
         $this->request->close();
@@ -239,5 +243,13 @@ class Client
     public function delete($route, array $params = array(), array $headers = array())
     {
         return $this->call('DELETE', $route, $params, $headers);
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getRequestInfo()
+    {
+        return $this->request_info;
     }
 }

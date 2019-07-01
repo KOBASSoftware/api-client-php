@@ -73,6 +73,14 @@ class Curl implements HttpRequest
     }
 
     /**
+     * @return array|false
+     */
+    public function getAllInfo()
+    {
+        return curl_getinfo($this->handle);
+    }
+
+    /**
      * @return int|mixed
      */
     public function getErrorNumber()
