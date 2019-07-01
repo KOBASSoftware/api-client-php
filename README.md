@@ -33,19 +33,25 @@ echo json_encode($response, JSON_PRETTY_PRINT);
 ## Client Functions
 
 ## get($route, $params = array(), $headers = array())
-cURL Get Request
+Sends a HTTP GET Request to the route provided.
 
 ## post($route, $params = array(), $headers = array())
-cURL Post Request
+Sends a HTTP POST Request to the route provided.
 
 ## put($route, $params = array(), $headers = array())
-cURL Put Request
+Sends a HTTP PUT Request to the route provided.
 
 ## delete($route, $params = array(), $headers = array())
-cURL Delete Request
+Sends a HTTP DELETE Request to the route provided.
+
+## getRequestInfo()
+Returns the result of `curl_getinfo()`on the last request made as an array.
 
 ## setAPIBaseURL($url)
 Allows over-riding the base URL (only really needed for development)
 
 ## setAPIVersion($version)
 Allows over-riding of the API version. Might be useful in future?
+
+
+

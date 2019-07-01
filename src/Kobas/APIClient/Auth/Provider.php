@@ -7,6 +7,7 @@ use Kobas\APIClient\Exception\AuthenticationException;
 use Kobas\APIClient\Exception\CurlException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
+use Kobas\OAuth2\Client\Provider\Kobas as OAuthProvider;
 
 /**
  * Class OAuthSigner
@@ -110,11 +111,11 @@ class Provider
     }
 
     /**
-     * @return \Kobas\OAuth2\Client\Provider\Kobas
+     * @return OAuthProvider
      */
     public function getProvider()
     {
-        $provider = new \Kobas\OAuth2\Client\Provider\Kobas([
+        $provider = new OAuthProvider([
             'clientId' => $this->clientId,
             'clientSecret' => $this->clientSecret,
             'companyId' => $this->companyId,

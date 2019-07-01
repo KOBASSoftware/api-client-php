@@ -10,7 +10,7 @@ namespace Kobas\APIClient\Request;
 class Curl implements HttpRequest
 {
     /**
-     * @var null
+     * @var null|resource
      */
     private $handle = null;
 
@@ -28,7 +28,7 @@ class Curl implements HttpRequest
 
     /**
      * @param $url
-     * @return $this|Curl
+     * @return Curl
      */
     public function setUrl($url)
     {
@@ -38,7 +38,7 @@ class Curl implements HttpRequest
     /**
      * @param $name
      * @param $value
-     * @return $this
+     * @return Curl
      */
     public function setOption($name, $value)
     {
@@ -48,7 +48,7 @@ class Curl implements HttpRequest
 
 
     /**
-     * @return null
+     * @return null|resource
      */
     public function getHandle()
     {
@@ -56,7 +56,7 @@ class Curl implements HttpRequest
     }
 
     /**
-     * @return mixed
+     * @return bool|string
      */
     public function execute()
     {
@@ -73,7 +73,15 @@ class Curl implements HttpRequest
     }
 
     /**
-     * @return int|mixed
+     * @return array|false
+     */
+    public function getAllInfo()
+    {
+        return curl_getinfo($this->handle);
+    }
+
+    /**
+     * @return int
      */
     public function getErrorNumber()
     {
@@ -81,7 +89,7 @@ class Curl implements HttpRequest
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
     public function getErrorMessage()
     {
@@ -89,7 +97,7 @@ class Curl implements HttpRequest
     }
 
     /**
-     * @return $this
+     * @return Curl
      */
     public function close()
     {

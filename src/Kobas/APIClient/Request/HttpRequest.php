@@ -39,6 +39,12 @@ interface HttpRequest
 
 
     /**
+     * @return array|false
+     */
+    public function getAllInfo();
+
+
+    /**
      * @return mixed
      */
     public function getErrorNumber();
