@@ -39,7 +39,7 @@ class Provider
     /**
      * @var string
      */
-    protected $url = 'https://oauth.kobas.co.uk';
+    protected $url;
 
     /**
      * OAuthSigner constructor.
@@ -48,13 +48,15 @@ class Provider
      * @param string $clientId
      * @param string $clientSecret
      * @param string $scopes
+     * @param string $url
      */
-    public function __construct($companyId, $clientId, $clientSecret, $scopes)
+    public function __construct($companyId, $clientId, $clientSecret, $scopes, $url = 'https://oauth.kobas.co.uk')
     {
         $this->companyId = (int)$companyId;
         $this->clientId = (string)$clientId;
         $this->clientSecret = (string)$clientSecret;
         $this->scopes = (string)$scopes;
+        $this->url = (string)$url;
     }
 
     /**
