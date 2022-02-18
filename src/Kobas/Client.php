@@ -186,6 +186,7 @@ class Client
         $headers = array_merge($this->headers, $headers);
 
         $headers['Content-Type'] = 'application/json';
+        $headers['User-Agent'] = 'Kobas API V2 Client';
 
         switch ($http_method) {
             case 'POST':
